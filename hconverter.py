@@ -71,7 +71,8 @@ def main_mf(fn='shopwise',mN =1):
     cv2.destroyAllWindows()
 
 
-def show_f(im,i,ntxy,l):
+def plot_f(im,i,ntxy,l):
+    cv2.putText(im,str(i),(10,20),cv2.FONT_HERSHEY_SIMPLEX,0.6,(0,150,255))    
     for n,t,x,y in ntxy:
         if t<=i and t>=i-l:
             cv2.circle(im,(int(x),int(y)),1,(0,175,0),2)
@@ -80,13 +81,13 @@ def show_f(im,i,ntxy,l):
     return im
 
     
-#shows n frames of the world and warped world - with ntxy    
+#shows n frames of the world and warped world - with ntxy, catenates them, save 
 def main_f(fn,mn,last):
     xys = mread(fn,mn)
     H,M = cv2.findHomography(np.array([p for i,v,p,h in xys]),np.array([h for i,v,p,h in xys]),cv2.RANSAC)
 
-    img = cv2.imread(fn+'_m'+str(mn)+'.jpg')
-    h,w,c = img.shape    
+    imG = cv2.imread(fn+'_m'+str(mn)+'.jpg')
+    h,w,c = imG.shape    
 
     _,ntxy = dread(fn+'_ntxy.dat',' ')
     ntxy = np.array(ntxy,dtype=np.float32)
@@ -95,17 +96,55 @@ def main_f(fn,mn,last):
     new_xy = cv2.perspectiveTransform(xy.reshape((-1,1,2)),H)
     htxy = np.concatenate((nt,new_xy.reshape((-1,2))),axis=1)
 
- #   fcc = cv2.VideoWriter_fourcc(*"XDIV")
- #   out = cv2.VideoWriter(fn+str(mn)+'_tes.avi',fcc,15.0,(h,w))
+    out = cv2.VideoWriter(fn+'_vsbs'+str(mn)+'.avi',cv2.VideoWriter_fourcc(*"XVID"),15,(w,h))
     i=0
     
     for i in range(last):
-        img = cv2.imread(fn+"{0:0>5}.jpg".format(i))
-        imH = cv2.warpPerspective(img,H,(w,h))        
-        cv2.imshow('wan',show_f(img,i,ntxy,50))
-  #      out.write(imH)
-        cv2.imshow('win',show_f(imH,i,htxy,50))        
+        imG = cv2.imread(fn+"{0:0>5}.jpg".format(i))
+        imGp = plot_f(imG,i,ntxy,50)
+        imGrs = cv2.resize(imGp,(w,h),interpolation=cv2.INTER_AREA)
+        
+        
+        imH = cv2.warpPerspective(imG,H,(w,h))                
+        imHp = plot_f(imH,i,htxy,50)
+        imgsbs = np.hstack((imHp,imGrs))
+        out.write(imgsbs)        
+        cv2.imshow('win',imgsbs)        
         cv2.waitKey(1)
     
-   # out.release()
+    out.release()
+    cv2.destroyAllWindows()
+
+
+
+# same as above, shows 3 windows
+def main_show3(fn,mn,last):
+    xys = mread(fn,mn)
+    H,M = cv2.findHomography(np.array([p for i,v,p,h in xys]),np.array([h for i,v,p,h in xys]),cv2.RANSAC)
+
+    imM = cv2.imread(fn+'_m'+str(mn)+'.jpg')
+    h,w,c = imM.shape    
+
+    _,ntxy = dread(fn+'_ntxy.dat',' ')
+    ntxy = np.array(ntxy,dtype=np.float32)
+    nt = ntxy[:,0:2]
+    xy = ntxy[:,2:4]
+    new_xy = cv2.perspectiveTransform(xy.reshape((-1,1,2)),H)
+    htxy = np.concatenate((nt,new_xy.reshape((-1,2))),axis=1)
+
+    i=0
+    
+    for i in range(last):
+        imG = cv2.imread(fn+"{0:0>5}.jpg".format(i))
+        imGp = plot_f(imG,i,ntxy,50)
+        imGrs = cv2.resize(imGp,(w,h),interpolation=cv2.INTER_AREA)
+        cv2.imshow('orig',imGrs)
+        
+        imH = cv2.warpPerspective(imG,H,(w,h))                
+        imHp = plot_f(imH,i,htxy,50)
+        cv2.imshow('warped',imHp)
+
+        cv2.imshow('model',plot_f(imM.copy(),i,htxy,50))       
+        cv2.waitKey(1)
+    
     cv2.destroyAllWindows()
