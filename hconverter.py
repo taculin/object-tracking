@@ -23,7 +23,7 @@ def dread(fname,separator):
                     lst.append(map(eval,row))
         print len(lst),'rows read'
     except IOError:
-        print 'No data file found'
+        print fname,'not file found'
     return header, lst    
 
 def mread(fn,mn):
@@ -56,7 +56,7 @@ def main_m(fn='shopwise',modNum=1):
 #shows the model, world, warped world    
 def main_mf(fn='shopwise',mN =1):
     imgm = cv2.imread(fn+'_m'+str(mN)+'.jpg')
-    imgf = cv2.imread(fn+'_f'+'.jpg')
+    imgf = cv2.imread(fn+'00000'+'.jpg')
     
     xys = mread(fn,mN)
     H,M = cv2.findHomography(np.array([p for i,v,p,h in xys]),np.array([h for i,v,p,h in xys]),cv2.RANSAC)
@@ -90,27 +90,37 @@ def main_f(fn,mn,last):
     h,w,c = imG.shape    
 
     _,ntxy = dread(fn+'_ntxy.dat',' ')
-    ntxy = np.array(ntxy,dtype=np.float32)
-    nt = ntxy[:,0:2]
-    xy = ntxy[:,2:4]
-    new_xy = cv2.perspectiveTransform(xy.reshape((-1,1,2)),H)
-    htxy = np.concatenate((nt,new_xy.reshape((-1,2))),axis=1)
-
-    out = cv2.VideoWriter(fn+'_vsbs'+str(mn)+'.avi',cv2.VideoWriter_fourcc(*"XVID"),15,(w,h))
+    if ntxy:
+        ntxy = np.array(ntxy,dtype=np.float32)
+        nt = ntxy[:,0:2]
+        xy = ntxy[:,2:4]
+        new_xy = cv2.perspectiveTransform(xy.reshape((-1,1,2)),H)
+        htxy = np.concatenate((nt,new_xy.reshape((-1,2))),axis=1)
+    else:
+        htxy=[]
+#    fcc = cv2.VideoWriter_fourcc(*"XVID")
+    print 'finding codec'
+    try:
+        out = cv2.VideoWriter('weh'+str(mn)+'.mpg',-1,20,(w,h))
+    except:
+        print 'error'
+        return
+    print 'codec found'
     i=0
     
     for i in range(last):
         imG = cv2.imread(fn+"{0:0>5}.jpg".format(i))
-        imGp = plot_f(imG,i,ntxy,50)
-        imGrs = cv2.resize(imGp,(w,h),interpolation=cv2.INTER_AREA)
-        
+        imGp = plot_f(imG.copy(),i,ntxy,50)
+        imGrs = cv2.resize(imGp.copy(),(w,h),interpolation=cv2.INTER_AREA)
         
         imH = cv2.warpPerspective(imG,H,(w,h))                
         imHp = plot_f(imH,i,htxy,50)
         imgsbs = np.hstack((imHp,imGrs))
         out.write(imgsbs)        
         cv2.imshow('win',imgsbs)        
-        cv2.waitKey(1)
+        if cv2.waitKey(1) == 27:
+            print 'terminating. esc key pressed'
+            break
     
     out.release()
     cv2.destroyAllWindows()
@@ -126,17 +136,19 @@ def main_show3(fn,mn,last):
     h,w,c = imM.shape    
 
     _,ntxy = dread(fn+'_ntxy.dat',' ')
-    ntxy = np.array(ntxy,dtype=np.float32)
-    nt = ntxy[:,0:2]
-    xy = ntxy[:,2:4]
-    new_xy = cv2.perspectiveTransform(xy.reshape((-1,1,2)),H)
-    htxy = np.concatenate((nt,new_xy.reshape((-1,2))),axis=1)
+    htxy = []
+    if ntxy:
+        ntxy = np.array(ntxy,dtype=np.float32)
+        nt = ntxy[:,0:2]
+        xy = ntxy[:,2:4]
+        new_xy = cv2.perspectiveTransform(xy.reshape((-1,1,2)),H)
+        htxy = np.concatenate((nt,new_xy.reshape((-1,2))),axis=1)
 
     i=0
     
     for i in range(last):
         imG = cv2.imread(fn+"{0:0>5}.jpg".format(i))
-        imGp = plot_f(imG,i,ntxy,50)
+        imGp = plot_f(imG.copy(),i,ntxy,50)
         imGrs = cv2.resize(imGp,(w,h),interpolation=cv2.INTER_AREA)
         cv2.imshow('orig',imGrs)
         
@@ -144,7 +156,16 @@ def main_show3(fn,mn,last):
         imHp = plot_f(imH,i,htxy,50)
         cv2.imshow('warped',imHp)
 
-        cv2.imshow('model',plot_f(imM.copy(),i,htxy,50))       
-        cv2.waitKey(1)
-    
+        cv2.imshow('model',plot_f(imM,i,htxy,50))       
+        if cv2.waitKey(1) == 27:
+            print 'terminating. esc key pressed'
+            break
+        
     cv2.destroyAllWindows()
+    
+    
+int_regis = 'Regis\MAH07553\MAH07553'
+int_westdrive = 'west drive\mar\mar'
+int_cubao = 'Shopwise-Cubao\MAH07557\MAH07557'
+
+codecs = ['DIVX', 'IYUV', 'CRAM', 'MSVC', 'WHAM', 'CVID', 'PIM1', 'MJPG', 'MP42', 'DIV3', 'U263', 'I263', 'FLV1']
