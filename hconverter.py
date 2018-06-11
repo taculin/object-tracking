@@ -3,6 +3,33 @@
 Created on Mon Jun 04 17:04:09 2018
 
 @author: alquine
+
+show model with tsv points
+    main_m(str,model#)
+
+show warped and orig with ntxy => saves to file
+    main_mf(str, model#, lastFr)
+   
+same as above, shows 3 windows    
+    main_show3(,,)
+
+
+
+
+
+media
+    frames 00000.jpg
+    model  _m0.jpg
+    output
+
+data
+    ntxy   _ntxy.dat
+    map    .tsv pointID/vx/vy/px/py
+    map2   .ts2 pointID/vx/vy/px/py/m1x/m1y/m2x/m2y
+
+
+
+
 """
 
 import cv2
@@ -32,6 +59,9 @@ def mread(fn,mn):
     return [[i,(vx,vy),(px,py),trans((vx,vy),pmap)] for i,vx,vy,px,py in lst]
     
 
+# H = [[s,   0,   s*xt],
+#      [0,  -s,   s*(ymax-yt)]
+#      [0,   0,   1]]
 def trans(point, pmap):
     x,y = point
     s,xt,yt,ymax = pmap
@@ -98,14 +128,10 @@ def main_f(fn,mn,last):
         htxy = np.concatenate((nt,new_xy.reshape((-1,2))),axis=1)
     else:
         htxy=[]
-#    fcc = cv2.VideoWriter_fourcc(*"XVID")
-    print 'finding codec'
-    try:
-        out = cv2.VideoWriter('weh'+str(mn)+'.mpg',-1,20,(w,h))
-    except:
-        print 'error'
-        return
-    print 'codec found'
+
+    fcc = cv2.VideoWriter_fourcc(*"DIVX")
+    out = cv2.VideoWriter('westdrive_2000_'+str(mn)+'.avi',fcc,20,(w*2,h))
+
     i=0
     
     for i in range(last):
@@ -169,3 +195,13 @@ int_westdrive = 'west drive\mar\mar'
 int_cubao = 'Shopwise-Cubao\MAH07557\MAH07557'
 
 codecs = ['DIVX', 'IYUV', 'CRAM', 'MSVC', 'WHAM', 'CVID', 'PIM1', 'MJPG', 'MP42', 'DIV3', 'U263', 'I263', 'FLV1']
+
+
+
+
+
+
+
+
+
+
