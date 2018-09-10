@@ -1,4 +1,4 @@
-# RaClicker
+# RAclicker
 ## decom(fname)
 Decomposes the video file into frames.
 ## clicker(fname)
