@@ -121,11 +121,9 @@ def recon(fn,lastFr=100, scale=.25):
     L = np.array(L,dtype=np.float32)
     
     T = cv2.perspectiveTransform(L[:,2:4].reshape((-1,1,2)),H)
-    print 'T:',len(T),T.shape,L.shape
         
     L = np.concatenate((L,T.reshape((-1,2))),axis=1)
     
-
     try:
         os.rename(fn+'_H.avi',datetime.datetime.now().strftime("%Y%m%d-%H%M")+'H.avi')
     except:
@@ -133,7 +131,6 @@ def recon(fn,lastFr=100, scale=.25):
 
     h,w,_ = cv2.imread(fn+"{0:0>5}".format(0)+'.jpg').shape        
     out = cv2.VideoWriter(fn+'_H.avi',cv2.VideoWriter_fourcc(*"DIVX"),28,(int(w*2*scale),int(h*scale)),True)
-
     
     for i in range(lastFr):
         im1 = cv2.imread(fn+"{0:0>5}".format(i)+'.jpg')        
@@ -150,7 +147,7 @@ def recon(fn,lastFr=100, scale=.25):
         im3 = np.hstack((cv2.resize(im1,None,fx=scale,fy=scale),cv2.resize(im2,None,fx=scale,fy=scale)))
         out.write(im3)
         if i%100==0:
-            print 'now at frame',i,'/',lastFr
-            
-    
+            print 'now at frame',i,'/',lastFr,'. Press q or esc to abort'
+        if k in [27,ord('q')]:
+            break    
     out.release()
