@@ -106,9 +106,9 @@ def mapModel(fn):
     cv2.destroyAllWindows()
 
 
-
 #==============================
-    
+
+#specify the last Frame. Also scale can be adjusted, although 0.25 or 1/4 will fit better in standard screen 
 def recon(fn,lastFr=100, scale=.25):
     fn = fn.split('.')[0]
     
@@ -118,10 +118,13 @@ def recon(fn,lastFr=100, scale=.25):
     with open(fn+'.ntxy','r') as file:
         for line in file:
             L.append([eval(w) for w in line.split(' ')])
+    L = np.array(L,dtype=np.float32)
     
-    T = cv2.perspectiveTransform(np.array(L).reshape((-1,1,2)),H)
+    T = cv2.perspectiveTransform(L[:,2:4].reshape((-1,1,2)),H)
+    print 'T:',len(T),T.shape,L.shape
+        
+    L = np.concatenate((L,T.reshape((-1,2))),axis=1)
     
-    LT = [[L[i][0],L[i][1],L[i][2],L[i][3],T[i][0],T[i][1]] for i in range(len(L))]
 
     try:
         os.rename(fn+'_H.avi',datetime.datetime.now().strftime("%Y%m%d-%H%M")+'H.avi')
@@ -129,14 +132,15 @@ def recon(fn,lastFr=100, scale=.25):
         print 'nothing to backup'
 
     h,w,_ = cv2.imread(fn+"{0:0>5}".format(0)+'.jpg').shape        
-    out = cv2.VideoWriter(fn+'_H.avi',cv2.VideoWriter_fourcc(*"DIVX"),28,(w*2*scale,h*scale))
+    out = cv2.VideoWriter(fn+'_H.avi',cv2.VideoWriter_fourcc(*"DIVX"),28,(int(w*2*scale),int(h*scale)),True)
 
     
     for i in range(lastFr):
         im1 = cv2.imread(fn+"{0:0>5}".format(i)+'.jpg')        
-        im2 = cv2.warpPerspective(im1, H)
-        D = [v for v in LT if (i-50)<=v[1]<=i]
+        im2 = cv2.warpPerspective(im1, H, (w,h))
+        D = [v for v in L if (i-50)<=v[1]<=i]
         for n,t,x,y,u,v in D:
+            n,t = int(n),int(t)
             cv2.circle(im1,(x,y),2,col(n),2)
             cv2.circle(im2,(u,v),2,col(n),2)
             if i==t:
@@ -150,9 +154,3 @@ def recon(fn,lastFr=100, scale=.25):
             
     
     out.release()
-        
-
-        
-    
-
-    
