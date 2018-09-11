@@ -106,7 +106,9 @@ def mapModel(fn):
     cv2.destroyAllWindows()
 
 
-#==============================
+
+    
+    #==============================
 
 #specify the last Frame. Also scale can be adjusted, although 0.25 or 1/4 will fit better in standard screen 
 def recon(fn,lastFr=100, scale=.25):
@@ -117,13 +119,17 @@ def recon(fn,lastFr=100, scale=.25):
     L = []
     with open(fn+'.ntxy','r') as file:
         for line in file:
-            L.append([eval(w) for w in line.split(' ')])
+            r = [eval(w) for w in line.split(' ')]
+            if r[1]<=lastFr:        # exclude unnecessaary rows right from the start
+                L.append(r)
     L = np.array(L,dtype=np.float32)
     
     T = cv2.perspectiveTransform(L[:,2:4].reshape((-1,1,2)),H)
+    print 'Transforming',len(L),' ntxy entries.'
         
     L = np.concatenate((L,T.reshape((-1,2))),axis=1)
     
+
     try:
         os.rename(fn+'_H.avi',datetime.datetime.now().strftime("%Y%m%d-%H%M")+'H.avi')
     except:
@@ -133,6 +139,7 @@ def recon(fn,lastFr=100, scale=.25):
     out = cv2.VideoWriter(fn+'_H.avi',cv2.VideoWriter_fourcc(*"DIVX"),28,(int(w*2*scale),int(h*scale)),True)
     
     for i in range(lastFr):
+        k = cv2.waitKey(0)
         im1 = cv2.imread(fn+"{0:0>5}".format(i)+'.jpg')        
         im2 = cv2.warpPerspective(im1, H, (w,h))
         D = [v for v in L if (i-50)<=v[1]<=i]
@@ -149,5 +156,5 @@ def recon(fn,lastFr=100, scale=.25):
         if i%100==0:
             print 'now at frame',i,'/',lastFr,'. Press q or esc to abort'
         if k in [27,ord('q')]:
-            break    
+            break
     out.release()
