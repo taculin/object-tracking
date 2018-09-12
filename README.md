@@ -21,5 +21,5 @@ Maps the current perspective to the target perspective by clicking the features 
 - r      go to next frame
 - d deletes the last entry
 - q,**esc** exit
-## recon(fname)
-This is supposed to transform the ntxy to the target pespective, warp the frame, and reconstruct the video
+## recon(fname, lastFr, scale)
+This method transforms the ntxy to the target pespective, warp the frame, and reconstruct the video. The last frame number must be specified, as frames 0<=lastFr will be reconstructed. Also the output window can be scaled, with value 1 being default, 0.5 means half the size of the video window.
