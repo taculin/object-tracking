@@ -18,18 +18,22 @@ def col(i):
 
 import Tkinter, tkMessageBox,tkSimpleDialog, os, datetime, json
 
-
 def decom(fname):
     fn = fname.split('.')[0]
     i=0
     cap = cv2.VideoCapture(fn+'.mp4')
-#    last = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    while cap.isOpened(): # and i<last:
+    last = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) if int(cv2.__version__[0])==3 else int(cap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT))
+    while cap.isOpened():
         ret, frame = cap.read()        
         if ret==True:
             frame = cv2.resize(frame, None, fx=0.75, fy=0.75)
-            cv2.imwrite(fn+"{0:0>5}".format(i)+'.jpg',frame)    
+            cv2.imwrite(fn+"{0:0>5}".format(i)+'.jpg',frame)
+            if i%500 is 0:
+                cv2.imshow('win',frame)
+                print 'Now at frame',i,'/',last,'. Hit q to abort'
             i=i+1
+            if (cv2.waitKey(1) & 0xFF) in [27,ord('q')]:
+                break
     print i,'frames extracted'
     cap.release()
     cv2.destroyAllWindows()
@@ -60,7 +64,7 @@ def l2f(R,fn):
                 file.write(' '.join(map(str, row))+"\n")
 
 def lop(f,R,i,n):
-    key = cv2.waitKey(0)
+    key = cv2.waitKey(0) & 0xFF
   
     if key == ord('+'):     # inc car number
         n=n+1
@@ -251,7 +255,7 @@ def mapModel(fn):
     k,i=0,0
     while k not in [ord('q'),27]:
         plotAndShow(0)
-        k = cv2.waitKey(0)
+        k = cv2.waitKey(0) & 0xFF
         if chr(k) == 'd':
             undo()
         elif chr(k) == 'l':
@@ -317,7 +321,7 @@ def recon(fn,lastFr=100, scale=.4):
             cv2.putText(im3,'PREVIEW',(10,int(h*scale*.5)),cv2.FONT_HERSHEY_SIMPLEX,int(20*scale),(255,255,255),int(25*scale))
             cv2.imshow('reconstructing video',im3)
             print 'now at frame',i,'/',lastFr,'. Press q or esc to abort'
-        if cv2.waitKey(1) in [27,ord('q')]:
+        if (cv2.waitKey(1) & 0xFF) in [27,ord('q')]:
             print 'aborting at frame',i
             break
     print 'saving file'
