@@ -1,5 +1,5 @@
-# UPDATE:
-UPDATED THE [RAtools.exe](https://drive.google.com/file/d/1pbeZFwPtqcXQVSFYhjS631vZdC0FRajY/view?usp=sharing) file. Please download this version as of 16 Sep 2018 1800H.
+# UPDATE as of 16Sep2018 1800H:
+UPDATED the RAclicker.py for method 1 and [RAtools.exe](https://drive.google.com/file/d/1pbeZFwPtqcXQVSFYhjS631vZdC0FRajY/view?usp=sharing) for method 2. Both can be downloaded from this site.
 
 
 
