@@ -1,5 +1,10 @@
-# UPDATE as of 16Sep2018 1800H:
-UPDATED the RAclicker.py for method 1 and [RAtools.exe](https://drive.google.com/file/d/1pbeZFwPtqcXQVSFYhjS631vZdC0FRajY/view?usp=sharing) for method 2. Both can be downloaded from this site.
+# UPDATE: Use file version as of 16Sep2018 1800H or later:
+
+## UPDATED 17Sep2018 0020H
+Enhanced RAclicker.py and [RAtools.exe](https://drive.google.com/file/d/1pbeZFwPtqcXQVSFYhjS631vZdC0FRajY/view?usp=sharing) to display status while extracting frames
+
+## UPDATED 16Sep2018 1800H
+Fixed bug (unable to extract frames) in files RAclicker.py for method 1 and [RAtools.exe](https://drive.google.com/file/d/1pbeZFwPtqcXQVSFYhjS631vZdC0FRajY/view?usp=sharing) for method 2. Both can be downloaded from this site.
 
 
 
