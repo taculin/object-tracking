@@ -1,5 +1,5 @@
 # UPDATE:
-UPDATED THE [RAtools.exe] (https://drive.google.com/file/d/1pbeZFwPtqcXQVSFYhjS631vZdC0FRajY/view?usp=sharing) file. Please download this version as of 16 Sep 2018 1800H.
+UPDATED THE [RAtools.exe](https://drive.google.com/file/d/1pbeZFwPtqcXQVSFYhjS631vZdC0FRajY/view?usp=sharing) file. Please download this version as of 16 Sep 2018 1800H.
 
 
 
