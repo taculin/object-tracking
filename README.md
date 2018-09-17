@@ -1,6 +1,6 @@
 # UPDATE: Bugs and fixes
 
-## UPDATED 17Sep2018 0600H
+## UPDATED 17Sep2018 0900H
 - Fixed Windows executable [RAtools.exe](https://drive.google.com/file/d/1pbeZFwPtqcXQVSFYhjS631vZdC0FRajY/view?usp=sharing) now available for download
 
 ## UPDATED 17Sep2018 0020H
