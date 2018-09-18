@@ -63,14 +63,17 @@ def l2f(R,fn):
             if len(row)<5:
                 file.write(' '.join(map(str, row))+"\n")
 
-def lop(f,R,i,n):
+def lop(tupl):
+    f,img,n,i,R,auto = tupl
     key = cv2.waitKey(0) & 0xFF
   
     if key == ord('+'):     # inc car number
-        n=n+1
+        tupl[2]=n+1
     elif key == ord('-'):   # dec car number
         if n>=0:
-            n=n-1
+            tupl[2]=n-1
+    elif key == ord('a'):   # toggles the auto next feature (frame advances after a click)
+        tupl[5] = not tupl[5]
     elif key == ord('d'):   # delete current i,n
         ind = [idx for idx,val in enumerate(R) if val[0]==n and val[1]==i]
         if len(ind)>0:
@@ -78,29 +81,26 @@ def lop(f,R,i,n):
             del R[ind[0]]
         else:
             print 'nothing to delete'
-    # overwrite data to file
-    elif key == ord('s'):
+    elif key == ord('s'):                   # overwrite data to file
         l2f(R,f)       
-    elif chr(key) in ['l',' ']:   # next frame
-        i=i+1
+    elif key in [ord('l'),ord(' ')]:   # next frame
+        tupl[3]=i+1
     elif key == ord('r'):   # previous frame 
-        i=i-1
-        if i<0:
-            i=0
-            print 'cant go to previous frame'
+        if i>1:
+            tupl[3]=i-1
     elif key == ord('z'):   # go to frame previously clicked 
-        n,i,x,y =  R[-1]
+        tupl[3] =  R[-1][1]
     elif chr(key) in ['c','q','f'] or key == 27:
         root = Tkinter.Tk()
         root.withdraw()
         if key == ord('c'):
             cc = tkSimpleDialog.askinteger('car number','Jump to Car Number',initialvalue=n)
             if cc is not None:
-                n = cc
+                tupl[2] = cc
         elif key == ord('f'):
             cc = tkSimpleDialog.askinteger('frame number','Go to Frame Number',initialvalue=i)
             if cc is not None:
-                i = cc
+                tupl[3] = cc
         elif key in [ord('q'),27]: # quit q or esc
             if len(R)> 0 and (tkMessageBox.askquestion("Closing window", "You want to save the coordinates first?", icon='warning') == 'yes'):
                 l2f(R,f)
@@ -111,7 +111,7 @@ def lop(f,R,i,n):
     else:
         print 'ignoring',key
     
-    return key,i,n
+    return key
 
 def getImg(fname,i):    
     try:
@@ -122,7 +122,8 @@ def getImg(fname,i):
         print 'an error ooccured while fetching an image'
         return None
     
-def shoImg(f,img,N,i,R):
+def shoImg(tupl, img):
+    f,_,N,i,R,auto = tupl
     c = col(N)
     s = .5    
     path = [r for r in R if r[1]<=i and r[1]>=i-10]
@@ -138,42 +139,39 @@ def shoImg(f,img,N,i,R):
     currCarClicked = [n for n in currClicked if n==N]
     frame = 'F:'+str(i)+','+str(len(currClicked))
     count = 'C:'+str(N)+','+str(len(currCarClicked))
+    autonext = 'Auto: ON' if auto is True else 'Auto: OFF'
     cv2.putText(img,frame,(15,20),cv2.FONT_HERSHEY_SIMPLEX,s,c)
     cv2.putText(img,count,(15,40),cv2.FONT_HERSHEY_SIMPLEX,s,c)
+    cv2.putText(img,autonext,(15,60),cv2.FONT_HERSHEY_SIMPLEX,s,c)    
     # show
     cv2.imshow(f,img)
     
-def click(f):
-    f=f.split('.')[0]
-    R=f2l(f)
-    i,N = 0,0
-    img=getImg(f,i)
-    shoImg(f,img.copy(),N,i,R)
+def click(f, autonext=False):
+    f=f.split('.')[0] 
+    T = [f,getImg(f,0),0,0,f2l(f), autonext]              # pack nonlocal variables to a mutable tuple
+    shoImg(T,T[1].copy())
     
     def onMseClk(event,x,y,flags,param):
+        f,img,N,i,R,auto = T                         # unpactk the tuple
         if event == cv2.EVENT_LBUTTONDOWN:
-            im = img.copy()
             R.append([N,i,x,y])
-            shoImg(f,im,N,i,R)
             print 'added (',x,',',y,') for car ',N,' at frame ',i
+            if auto is True:
+                T[1] = getImg(f,i+1)                # update the frame to the next
+                T[3] = i+1                          # increment i and repack updated values
+            shoImg(T,T[1].copy())
         if event == cv2.EVENT_MOUSEMOVE:
             im = img.copy()
-            h,w=img.shape[:2]
+            h,w=im.shape[:2]
             cv2.putText(im,str(x)+','+str(y),(w-200,40),cv2.FONT_HERSHEY_SIMPLEX,0.8,(255,255,255))
-            shoImg(f,im,N,i,R)
+            shoImg(T,im)
     cv2.namedWindow(f)        
     cv2.setMouseCallback(f, onMseClk)
     
     key=0
     while not key in [ord('q'),27]:
-        img=getImg(f,i)        
-        if (img is None) and (i>0):
-            i = 0
-            img = getImg(f,i)
-            print 'wrapping around'
-        shoImg(f,img.copy(),N,i,R)
-        key,i,N = lop(f,R,i,N)
-
+        shoImg(T,T[1].copy())
+        key = lop(T)
 
     cv2.destroyAllWindows()
 
@@ -321,7 +319,6 @@ def recon(fn,lastFr=100, scale=.4):
             cv2.putText(im3,'PREVIEW',(10,int(h*scale*.5)),cv2.FONT_HERSHEY_SIMPLEX,int(20*scale),(255,255,255),int(25*scale))
             cv2.imshow('reconstructing video',im3)
             print 'now at frame',i,'/',lastFr,'. Press q or esc to abort'
-        if (cv2.waitKey(1) & 0xFF) in [27,ord('q')]:
             print 'aborting at frame',i
             break
     print 'saving file'
@@ -334,7 +331,10 @@ if len(sys.argv)>=3:
     if sys.argv[1]=='decom':
         decom(sys.argv[2])
     elif sys.argv[1]=='click':
-        click(sys.argv[2])    
+        if len(sys.argv)==3:
+            click(sys.argv[2])
+        elif len(sys.argv)==4 and sys.argv[3].lower()=='on':
+            click(sys.argv[2],True)
     elif sys.argv[1]=='map':
         mapModel(sys.argv[2])
     elif sys.argv[1]=='recon':
