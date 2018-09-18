@@ -1,7 +1,7 @@
 # UPDATE: Bugs and fixes
 
 ## UPDATED 17Sep2018 2300H
-- Incorporated the auto skip feature that was requested earlier. To activate by default, use the following commands for method 1.a, method 1.b, and method 2 respectively:
+- Incorporated the auto skip feature that was requested earlier. You can toggle the value to ON or OFF by pressing 'a' during execution. To activate by default, use the following commands for method 1.a, method 1.b, and method 2 respectively:
     > click('00',True)
     
     > python RAtools.py click 00 ON
