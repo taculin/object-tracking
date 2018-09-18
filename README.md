@@ -3,8 +3,11 @@
 ## UPDATED 17Sep2018 2300H
 - Incorporated the auto skip feature that was requested earlier. To activate by default, use the following commands for method 1.a, method 1.b, and method 2 respectively:
     > click('00',True)
+    
     > python RAtools.py click 00 ON
+    
     > ~~RAtools click 00 ON~~
+
 - The exe version is not available yet. Maybe it will be downloadable by 18Sep2018 1000H since I have to compile it using the Microsoft computer of the Pedestrian Lab at Faura Building. If you have at least python 2.7, opencv, numpy installed in your computer, you can use method 1.b.
 
 ## UPDATED 17Sep2018 0900H
