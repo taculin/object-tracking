@@ -1,7 +1,12 @@
 # UPDATE: Bugs and fixes
 
 ## UPDATED 19Sep2018 1100H
-- Updated [RAtools.exe](https://drive.google.com/file/d/1pbeZFwPtqcXQVSFYhjS631vZdC0FRajY/view?usp=sharing) now available for download. The click method has now an auto-skip frame feature.
+- Updated [RAtools.exe](https://drive.google.com/file/d/1pbeZFwPtqcXQVSFYhjS631vZdC0FRajY/view?usp=sharing) for method 2 is now available for download. To activate autoframe by default:
+
+    > RAtools click 00 ON
+
+Toggle this value by pressing 'a' during execution.
+
 
 ## UPDATED 18Sep2018 2300H
 - Incorporated the auto skip feature that was requested earlier. You can toggle the value to ON or OFF by pressing 'a' during execution. To activate by default, use the following commands for method 1.a, method 1.b, and method 2 respectively:
@@ -28,7 +33,7 @@ Fixed bug (unable to extract frames) in files RAclicker.py for method 1 and [RAt
 
 ## decom(fname)
 Decomposes the video file into frames.
-## clicker(fname)
+## click(fname)
 Collects ground truth by clicking moving vehicles. The result is an ntxy file. The following are the key commands:
 - l,' '  (small L or spaces) go to next frame
 - r      go to next frame
