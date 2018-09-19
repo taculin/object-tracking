@@ -85,9 +85,11 @@ def lop(tupl):
         l2f(R,f)       
     elif key in [ord('l'),ord(' ')]:   # next frame
         tupl[3]=i+1
+        tupl[1]=getImg(f,i+1)
     elif key == ord('r'):   # previous frame 
         if i>1:
             tupl[3]=i-1
+            tupl[1]=getImg(f,i-1)
     elif key == ord('z'):   # go to frame previously clicked 
         tupl[3] =  R[-1][1]
     elif chr(key) in ['c','q','f'] or key == 27:
@@ -101,6 +103,7 @@ def lop(tupl):
             cc = tkSimpleDialog.askinteger('frame number','Go to Frame Number',initialvalue=i)
             if cc is not None:
                 tupl[3] = cc
+                tupl[1] = getImg(f,cc)
         elif key in [ord('q'),27]: # quit q or esc
             if len(R)> 0 and (tkMessageBox.askquestion("Closing window", "You want to save the coordinates first?", icon='warning') == 'yes'):
                 l2f(R,f)
@@ -172,7 +175,6 @@ def click(f, autonext=False):
     while not key in [ord('q'),27]:
         shoImg(T,T[1].copy())
         key = lop(T)
-
     cv2.destroyAllWindows()
 
 #=======================
