@@ -1,19 +1,22 @@
 # UPDATE: Bugs and fixes
 
-## UPDATED 17Sep2018 2300H
+## UPDATED 19Sep2018 1100H
+- Updated [RAtools.exe](https://drive.google.com/file/d/1pbeZFwPtqcXQVSFYhjS631vZdC0FRajY/view?usp=sharing) now available for download. The click method has now an auto-skip frame feature.
+
+## UPDATED 18Sep2018 2300H
 - Incorporated the auto skip feature that was requested earlier. You can toggle the value to ON or OFF by pressing 'a' during execution. To activate by default, use the following commands for method 1.a, method 1.b, and method 2 respectively:
     > click('00',True)
     
     > python RAtools.py click 00 ON
     
-    > ~~RAtools click 00 ON~~
+    > RAtools click 00 ON
 
-- The exe version is not available yet. Maybe it will be downloadable by 18Sep2018 1000H since I have to compile it using the Microsoft computer of the Pedestrian Lab at Faura Building. If you have at least python 2.7, opencv, numpy installed in your computer, you can use method 1.b.
 
-## UPDATED 17Sep2018 0900H
+
+## UPDATED 18Sep2018 0900H
 - Fixed Windows executable [RAtools.exe](https://drive.google.com/file/d/1pbeZFwPtqcXQVSFYhjS631vZdC0FRajY/view?usp=sharing) now available for download
 
-## UPDATED 17Sep2018 0020H
+## UPDATED 18Sep2018 0020H
 - Enhanced RAclicker.py and [RAtools.exe](https://drive.google.com/file/d/1pbeZFwPtqcXQVSFYhjS631vZdC0FRajY/view?usp=sharing) to display status while extracting frames.
 - Linux executable [RAtools](https://drive.google.com/file/d/1da5lnPgdgYCE7ag7tEKE2UCIrBQ4cMsl/view?usp=sharing)
 
