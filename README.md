@@ -1,7 +1,11 @@
 # UPDATE: Bugs and fixes
 
 ## UPDATED 20Sep2018 1230H
-- Fixed recon method. Download source code above or the exe files in this link:[RAtools.exe](https://drive.google.com/file/d/1pbeZFwPtqcXQVSFYhjS631vZdC0FRajY/view?usp=sharing)
+- Fixed recon method. Download source code above or the exe files in this link:[RAtools.exe](https://drive.google.com/file/d/1pbeZFwPtqcXQVSFYhjS631vZdC0FRajY/view?usp=sharing). Use the following commands for methods 1.a, 1.b and 2 respectively.
+
+    > recon('00',42000,0.5)
+    > python RAtools.py recon 00 42000 0.5
+    > RAtools recon 00 42000 0.5
 
 ## UPDATED 19Sep2018 1100H
 - Updated [RAtools.exe](https://drive.google.com/file/d/1pbeZFwPtqcXQVSFYhjS631vZdC0FRajY/view?usp=sharing) for method 2 is now available for download. To activate autoframe by default:
