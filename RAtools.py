@@ -321,6 +321,7 @@ def recon(fn,lastFr=100, scale=.4):
             cv2.putText(im3,'PREVIEW',(10,int(h*scale*.5)),cv2.FONT_HERSHEY_SIMPLEX,int(20*scale),(255,255,255),int(25*scale))
             cv2.imshow('reconstructing video',im3)
             print 'now at frame',i,'/',lastFr,'. Press q or esc to abort'
+        if (cv2.waitKey(1) & 0xFF) in [27,ord('q')]:
             print 'aborting at frame',i
             break
     print 'saving file'
