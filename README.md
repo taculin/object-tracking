@@ -1,5 +1,8 @@
 # UPDATE: Bugs and fixes
 
+## UPDATED 20Sep2018 1230H
+- Fixed recon method. Download source code above or the exe files in this link:[RAtools.exe](https://drive.google.com/file/d/1pbeZFwPtqcXQVSFYhjS631vZdC0FRajY/view?usp=sharing)
+
 ## UPDATED 19Sep2018 1100H
 - Updated [RAtools.exe](https://drive.google.com/file/d/1pbeZFwPtqcXQVSFYhjS631vZdC0FRajY/view?usp=sharing) for method 2 is now available for download. To activate autoframe by default:
 
